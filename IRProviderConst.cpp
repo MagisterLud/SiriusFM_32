@@ -19,7 +19,7 @@ IRProvider<IRModeE::Const>::IRProvider(char const* a_file)
   {
     fgets(forex, 4, fp);
     fgets(buff, 64, fp);
-    r=atof(buff+1);
+    r=atof(buff);
     if(strcmp(forex, "USD")==0) m_IRs[0]=r;
     else if(strcmp(forex, "EUR")==0) m_IRs[1]=r;
     else if(strcmp(forex, "GBP")==0) m_IRs[2]=r;
