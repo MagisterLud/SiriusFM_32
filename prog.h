@@ -1,10 +1,13 @@
-#include <stdio.h>
-#include <stdexcept>
-#include <cmath>
-#include <cstring>
-#include <string>
-#include <iostream>
-#include <ctime>
+#pragma once
+#include<stdio.h>
+#include<stdexcept>
+#include<cmath>
+#include<cstring>
+#include<string>
+#include<iostream>
+#include<ctime>
+#include"Time.h"
+
 namespace SiriusFM
 {
   class Diffusion_GBM
@@ -169,7 +172,7 @@ private:
   Diffusion const* m_diff;
   AProvider const* m_rateA;
   BProvider const* m_rateB;
-  AssetClassA m_a; // код инструмента B (точнее Asset'а A), например, B=CcyE::RUB
+  AssetClassA m_a; // код инструмента B (точнее Asset'а A), например, B=CcyE::RUB В НАШЕМ СЛУЧАЕ AssetClassA будет совпадать с AssetClassB
   AAssetClassB m_b; // код интсрумента A (точнее Asset'а B), например, A=CcyE::USD
   bool m_isRN; // Risk neutral term
   */ //Это вроде не нужно и будет передаваться в методе Simulate
@@ -196,12 +199,19 @@ public:
   void Simulate(time_t a_t0,
     time_t a_T,
     int a_tau_min,
+    double a_s0, //начальная точка
+    long a_P, // Число путей
     Diffusion1D const* a_diff,
     AProvider const* a_rateA,
     BProvider const* a_rateB,
     AssetClassA a_A,
     AssetClassB a_B,
     bool a_isRN); // a_T -- время экспирации, a a_t0 -- текущее время
+
+    ~MCEngine1D()
+    {
+      delete[] m_paths;
+    }
 };
 
 };

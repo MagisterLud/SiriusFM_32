@@ -7,12 +7,16 @@
 #IncludeRegexTransform: 
 
 /Users/michaelkorneff/SiriusFM_32/IRProviderConst.cpp
+MCEngine1D.hpp
+/Users/michaelkorneff/SiriusFM_32/MCEngine1D.hpp
+
+/Users/michaelkorneff/SiriusFM_32/MCEngine1D.hpp
 prog.h
 /Users/michaelkorneff/SiriusFM_32/prog.h
 
 /Users/michaelkorneff/SiriusFM_32/main.cpp
-prog.h
-/Users/michaelkorneff/SiriusFM_32/prog.h
+MCEngine1D.hpp
+/Users/michaelkorneff/SiriusFM_32/MCEngine1D.hpp
 
 /Users/michaelkorneff/SiriusFM_32/prog.h
 stdio.h
