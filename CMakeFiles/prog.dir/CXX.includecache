@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/michaelkorneff/SiriusFM_32/IRProviderConst.cpp
+prog.h
+/Users/michaelkorneff/SiriusFM_32/prog.h
+
+/Users/michaelkorneff/SiriusFM_32/main.cpp
+prog.h
+/Users/michaelkorneff/SiriusFM_32/prog.h
+
+/Users/michaelkorneff/SiriusFM_32/prog.h
+stdio.h
+-
+stdexcept
+-
+cmath
+-
+cstring
+-
+string
+-
+iostream
+-
+ctime
+-
+

@@ -4,6 +4,7 @@
 #include <cstring>
 #include <string>
 #include <iostream>
+#include <ctime>
 namespace SiriusFM
 {
   class Diffusion_GBM
@@ -100,6 +101,7 @@ namespace SiriusFM
 
 enum class CcyE
 {
+  Undefined=-1,
   USD=0,
   EUR=1,
   GBP=2,
@@ -149,6 +151,57 @@ public:
   IRProvider(char const* a_file);
   double r(CcyE a_ccy, double a_t){return m_IRs[(int)(a_ccy)];}
 
+};
+
+template<typename Diffusion1D, typename AProvider, typename BProvider, typename AssetClassA, typename AssetClassB>
+class MCEngine1D
+{
+private:
+  long const m_MaxL; //максимальная длина траектории
+  long const m_MaxP; //максимальное количество путей
+  double* m_paths; //массив путей
+  /*
+  long m_L; // m_L <= m_MaxL
+  long m_P; // m_P <= m_MaxP
+  double m_tau; // шаг по времени
+  double m_t0; // 2021 чего-то там???
+
+  Diffusion const* m_diff;
+  AProvider const* m_rateA;
+  BProvider const* m_rateB;
+  AssetClassA m_a; // код инструмента B (точнее Asset'а A), например, B=CcyE::RUB
+  AAssetClassB m_b; // код интсрумента A (точнее Asset'а B), например, A=CcyE::USD
+  bool m_isRN; // Risk neutral term
+  */ //Это вроде не нужно и будет передаваться в методе Simulate
+
+public:
+  MCEngine1D(long a_MaxL, long a_MaxP)
+  :m_MaxL(a_MaxL),
+  m_MaxP(a_MaxP),
+  m_paths(new double[m_MaxL*m_MaxP])
+  /*
+  m_L(0),
+  m_P(0),
+  m_tau(nan),
+  m_diff(nullptr),
+  m_rateA(nullptr),
+  m_rateB(nullptr),
+  m_a(AssetClssA::Undefined),
+  m_b(AssetClassB::Undefined),
+  */ //Это вроде не нужно и будет передаваться в методе Simulate
+  {
+    if(m_MaxL <= 0 || m_MaxP <= 0) std::invalid_argument("ERROR!");
+  }
+
+  void Simulate(time_t a_t0,
+    time_t a_T,
+    int a_tau_min,
+    Diffusion1D const* a_diff,
+    AProvider const* a_rateA,
+    BProvider const* a_rateB,
+    AssetClassA a_A,
+    AssetClassB a_B,
+    bool a_isRN); // a_T -- время экспирации, a a_t0 -- текущее время
 };
 
 };

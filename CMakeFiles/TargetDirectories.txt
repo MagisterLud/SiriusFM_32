@@ -1,0 +1,3 @@
+/Users/michaelkorneff/SiriusFM_32/CMakeFiles/rebuild_cache.dir
+/Users/michaelkorneff/SiriusFM_32/CMakeFiles/edit_cache.dir
+/Users/michaelkorneff/SiriusFM_32/CMakeFiles/prog.dir
