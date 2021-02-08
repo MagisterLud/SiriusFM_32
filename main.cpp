@@ -1,4 +1,4 @@
-#include "prog.h"
+#include "MCEngine1D.hpp"
 
 using namespace SiriusFM;
 
