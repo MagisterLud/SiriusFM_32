@@ -43,14 +43,14 @@ namespace SiriusFM
          std::mt19937_64 U;
 
          double stau = sqrt(tau);
-         double tlast = yT - y0 - double(L -2)*tau;
+         double tlast = yT - y0 - double(L - 2)*tau;
          double slast = sqrt(tlast);
 
          //Main simulate loop
          for(long P=0; P<a_P; P++)
          {
            double* path0 = m_paths + 2*P*L;
-           double* path1 = path0 + 1;
+           double* path1 = path0 + L;
            path0[0] = a_s0;
            path1[0] = a_s0;
            double y=y0;
@@ -63,17 +63,16 @@ namespace SiriusFM
              if(a_isRN)
              {
                double delta_r; // Уточнить!!! Откуда delta_r???
-               a_rateB->r(a_B, y);
-               a_rateA->r(a_A, y);
-               mu0 = delta_r + Sp0;
-               mu1 = delta_r + Sp1;
+               delta_r = a_rateB->r(a_B, y) - a_rateA->r(a_A, y);
+               mu0 = delta_r * Sp0; // Возможно здесь стоит сумма, а не умножение!!!
+               mu1 = delta_r * Sp1; // Возможно здесь стоит сумма, а не умножение!!!
              }
              else
              {
                mu0 = a_diff->mu(Sp0, y);
                mu1 = a_diff->mu(Sp1, y);
              }
-             double sigma0 = a_diff->sigma(Sp0,y);
+             double sigma0 = a_diff->sigma(Sp0, y);
              double sigma1 = a_diff->sigma(Sp1, y);
 
              double Z = N01(U);
