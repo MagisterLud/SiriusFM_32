@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
   double E_sT=0.0;
   double E_sT2=0.0;
   int NVP=0; // NVP -- это количество путей
-  cout << P1 << endl;
+
   for(int P=0; P<P1; P++)
   {
     double const* path = paths + P*L1;
@@ -65,11 +65,44 @@ int main(int argc, char* argv[])
   cout << "sigma2= " << sigma*sigma << ", sigma2E= " << sigma2E << endl;
 
 
+  //cout << L1 << endl;
+
+  //==============================================================================
+  // Graphics 2D
+  /*
+  FILE *f;
+
+  f = fopen("data.txt", "w");
+
+  for(int i=0; i<L1; i++)
+  {
+    fprintf(f, "%lf ", double(tau_min*i));
+    fprintf(f, "%lf\n", paths[i]);
+  }
+  */
 
 
   //==============================================================================
+  // Graphics 3D
 
-  
+  /*
+  FILE *f;
+
+  f = fopen("3D.txt", "w");
+
+  for(int i=0; i<L1; i++)
+  {
+    for(int j=0; j<L1; j++)
+    {
+      fprintf(f, "%lf ", double(tau_min*i));
+      fprintf(f, "%lf ", double(tau_min*j));
+      fprintf(f, "%lf\n", paths[i]+paths[L1+j]);
+    }
+
+  }
+  */
+
+
 
 
 
