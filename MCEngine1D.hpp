@@ -3,10 +3,12 @@
 #include"Time.h"
 #include<cassert>
 #include<random>
+#include<tuple>
 
 namespace SiriusFM
 {
   template<typename Diffusion1D, typename AProvider, typename BProvider, typename AssetClassA, typename AssetClassB>
+  template<bool IsRN>
 
   inline void MCEngine1D <Diffusion1D,
   AProvider,
@@ -21,21 +23,33 @@ namespace SiriusFM
       AProvider const* a_rateA,
       BProvider const* a_rateB,
       AssetClassA a_A,
-      AssetClassB a_B,
-      bool a_isRN)
+      AssetClassB a_B)
     {
       // Тут должны быть ассёрты
+
       assert(a_diff!=nullptr &&
-         a_rateA = nullptr &&
-         a_rateB = nullptr &&
-         a_A=AssetClassA::Undefined &&
+         a_rateA != nullptr &&
+         a_rateB != nullptr &&
+         a_A != AssetClassA::Undefined &&
          a_t0 <= a_T &&
          a_tau_min >= 0);
 
-         double y0 = YearFree(a_t0);
-         double yT = YearFree(a_T);
-         double tau = double(a_tau_min)/(365.25+1440.0);
-         long L = long (ceil(yT-y0)/tau)+1; // Получили длину пути
+
+
+         time_t Tsec=a_T-a_t0;
+         time_t tau_sec= a_tau_min*60;
+         long L=(Tsec % tau_sec == 0) ? Tsec/tau_sec : Tsec/tau_sec + 1; // Число интервалов (не точек)!!! ЗДесь изменение!!!
+         double tau = YearFracInterval(tau_sec);
+         double tlast = (Tsec % tau_sec == 0) ? tau : YearFracInterval(Tsec-(L-1)*tau_sec);
+         assert(0<tlast && tlast <= tau);
+
+         L++; // сделали L количеством точек
+
+
+         double y0 = YearFrac(a_t0);
+         //double yT = YearFree(a_T);
+         //double tau = double(a_tau_min)/(365.25+1440.0);
+         //long L = long (ceil(yT-y0)/tau)+1; // Получили длину пути
          long P = 2*a_P; // Для каждого P создаём два пути: брауновский инкремент и минус брауновский инкремент
          if(L*P > m_MaxL*m_MaxP) std::invalid_argument("...");
 
@@ -43,8 +57,9 @@ namespace SiriusFM
          std::mt19937_64 U;
 
          double stau = sqrt(tau);
-         double tlast = yT - y0 - double(L - 2)*tau;
+         //double tlast = yT - y0 - double(L - 2)*tau;
          double slast = sqrt(tlast);
+         assert(slast <= stau); //Тут добавлен асёрт
 
          //Main simulate loop
          for(long P=0; P<a_P; P++)
@@ -60,7 +75,7 @@ namespace SiriusFM
            {
              double mu0=0.0;
              double mu1=0.0;
-             if(a_isRN)
+             if(IsRN)
              {
                double delta_r; // Уточнить!!! Откуда delta_r???
                delta_r = a_rateB->r(a_B, y) - a_rateA->r(a_A, y);
@@ -93,6 +108,8 @@ namespace SiriusFM
              Sp1=Sn1;
            }
          }
+          m_L=L;
+          m_P=P; // Убрали ретёрн
 
     }
 };

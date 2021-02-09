@@ -1,4 +1,5 @@
 #pragma once
+#include<utility>
 #include<stdio.h>
 #include<stdexcept>
 #include<cmath>
@@ -16,8 +17,8 @@ namespace SiriusFM
     double const m_mu;
     double const m_sigma;
   public:
-    double mu(double a_s, double t){return m_mu*a_s;}
-    double sigma(double a_s, double t){return (a_s<0) ? 0 : m_sigma*a_s;}
+    double mu(double a_s, double t) const {return m_mu*a_s;}
+    double sigma(double a_s, double t) const {return (a_s<0) ? 0 : m_sigma*a_s;} // Добавил в этих функциях const
     Diffusion_GBM(double a_mu, double a_sigma)
     :m_mu(a_mu),
     m_sigma(a_sigma)
@@ -110,6 +111,7 @@ enum class CcyE
   GBP=2,
   CHF=3,
   RUB=4,
+  ZZZ=5,// Нулевой параметр
   N=5
 };
 
@@ -152,7 +154,7 @@ private:
   double m_IRs[(int)(CcyE::N)];
 public:
   IRProvider(char const* a_file);
-  double r(CcyE a_ccy, double a_t){return m_IRs[(int)(a_ccy)];}
+  double r(CcyE a_ccy, double a_t) const {return m_IRs[(int)(a_ccy)];}
 
 };
 
@@ -163,6 +165,8 @@ private:
   long const m_MaxL; //максимальная длина траектории
   long const m_MaxP; //максимальное количество путей
   double* m_paths; //массив путей
+  long m_L;
+  long m_P;
   /*
   long m_L; // m_L <= m_MaxL
   long m_P; // m_P <= m_MaxP
@@ -181,7 +185,9 @@ public:
   MCEngine1D(long a_MaxL, long a_MaxP)
   :m_MaxL(a_MaxL),
   m_MaxP(a_MaxP),
-  m_paths(new double[m_MaxL*m_MaxP])
+  m_paths(new double[m_MaxL*m_MaxP]),
+  m_L(0),
+  m_P(0)
   /*
   m_L(0),
   m_P(0),
@@ -196,22 +202,30 @@ public:
     if(m_MaxL <= 0 || m_MaxP <= 0) std::invalid_argument("ERROR!");
   }
 
-  void Simulate(time_t a_t0,
+template<bool IsRN>
+  void Simulate(time_t a_t0, // Вместо void сделали std::pair<long, long>
     time_t a_T,
-    int a_tau_min,
+    int a_tau_min,// промежуток времени в минутах
     double a_s0, //начальная точка
     long a_P, // Число путей
     Diffusion1D const* a_diff,
     AProvider const* a_rateA,
     BProvider const* a_rateB,
     AssetClassA a_A,
-    AssetClassB a_B,
-    bool a_isRN); // a_T -- время экспирации, a a_t0 -- текущее время
+    AssetClassB a_B); // a_T -- время экспирации, a a_t0 -- текущее время, удаляем параметр m_isRN
+
+    std::tuple<long, long, double const*> GetPaths() const
+    {
+      return (m_L<=0 || m_P<=0) ? std::make_tuple(0, 0, nullptr) : std::make_tuple(m_L, m_P, m_paths);
+    }
 
     ~MCEngine1D()
     {
       delete[] m_paths;
     }
+
+    MCEngine1D(MCEngine1D const&) = delete; // хотим запретить оператор присваивания
+    MCEngine1D& operator = (MCEngine1D const&) = delete;
 };
 
 };
