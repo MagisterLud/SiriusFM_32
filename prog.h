@@ -8,6 +8,7 @@
 #include<iostream>
 #include<ctime>
 #include"Time.h"
+#include<tuple>
 
 namespace SiriusFM
 {
