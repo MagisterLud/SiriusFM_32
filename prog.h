@@ -111,8 +111,7 @@ enum class CcyE
   EUR=1,
   GBP=2,
   CHF=3,
-  RUB=4,
-  ZZZ=5,// Нулевой параметр
+  RUB=4,// Здесь был нулевой параметр ZZZ
   N=5
 };
 
@@ -228,5 +227,86 @@ template<bool IsRN>
     MCEngine1D(MCEngine1D const&) = delete; // хотим запретить оператор присваивания
     MCEngine1D& operator = (MCEngine1D const&) = delete;
 };
+
+/*
+class EurCallOption
+{
+  double const m_K; // m_K>0
+  int const m_Tdays; // m_Tdays>0
+public:
+  EurCallOption(double a_K, int a_Tdays)
+  :m_K(a_K),
+  m_Tdays(a_Tdays)
+  {
+    //Checks
+  }
+  double payoff(double a_sT) const
+  {
+    return pay; // здесь нужно что-товернуть
+  }
+};
+*/
+
+class Option
+{
+protected: // protected виден из виртуальных классов и не виден из других
+  bool const m_isAmerican;
+  int const m_Tdays;
+  Option(bool a_isAmerican, int a_Tdays)
+  :m_isAmerican(a_isAmerican),
+  m_Tdays(a_Tdays)
+  {}
+public:
+  virtual double payoff(long a_L, double const * a_t, double const* a_s) const = 0; // виртуальный метод
+
+  virtual ~Option(){}
+};
+
+class EurCallOption:public Option //в VanillaOptions.h. Этот класс -- просто Option с дополнительным полем m_K
+{
+private:
+  double const m_K;
+public:
+  EurCallOption(double a_K, int a_Tdays)
+  :Option(false, a_Tdays),
+  m_K(a_K)
+  {
+    //Check for K
+  }
+
+  ~EurCallOption() override {}
+
+  double payoff(long a_L, double const* a_t, double const* a_s) const override
+  {
+    assert(a_L > 0 /*&& a_t !=nullptr */&& a_s != nullptr);
+    double sT=a_s[a_L-1];
+    return std::max<double>(sT-m_K, 0.0);
+  }
+};
+
+  class EurPutOption:public Option //в VanillaOptions.h. Этот класс -- просто Option с дополнительным полем m_K
+  {
+  private:
+    double const m_K;
+  public:
+    EurPutOption(double a_K, int a_Tdays)
+    :Option(false, a_Tdays),
+    m_K(a_K)
+    {
+      //Check for K
+    }
+
+    ~EurPutOption() override {}
+
+    double payoff(long a_L, double const* a_t, double const* a_s) const override
+    {
+      assert(a_L > 0 /*&& a_t !=nullptr */&& a_s != nullptr);
+      double sT=a_s[a_L-1];
+      return std::max<double>(m_K-sT, 0.0);
+    }
+
+};
+
+
 
 };

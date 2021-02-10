@@ -61,8 +61,8 @@ int main(int argc, char* argv[])
   double sigma2E = Var_sT/Ty;
   double muE = (E_sT + Var_sT/2.0)/Ty;
 
-  cout << "mu= " << mu << ", muE= " << muE << endl;
-  cout << "sigma2= " << sigma*sigma << ", sigma2E= " << sigma2E << endl;
+  cout << "mu = " << mu << ", muE = " << muE << endl;
+  cout << "sigma2 = " << sigma*sigma << ", sigma2E = " << sigma2E << endl;
 
 
   //cout << L1 << endl;
